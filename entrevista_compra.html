@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrevista - Sistema T&S</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .interview-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+        }
+        .question-card {
+            border-left: 4px solid #667eea;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .required {
+            color: #dc3545;
+        }
+        .progress-indicator {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-indicator">
+        <div class="container">
+            <div class="progress" style="height: 6px;">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="interview-header text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Entrevista de Evaluación</h1>
+            <p class="lead">Sistema de Gestión de Turnos T&S</p>
+            <p>Por favor, complete esta entrevista para evaluar cómo nuestro sistema puede adaptarse a sus necesidades específicas.</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <form id="entrevistaForm" onsubmit="return procesarFormulario(event)">
+            <!-- Sección 1: Información General -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card question-card">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">📋 Sección 1: Información General</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">1. Nombre completo <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="nombre" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">2. Cargo en la empresa <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="cargo" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">3. Empresa/Organización <span class="required">*</span></label>
+                                    <input type="text" class="form-control" name="empresa" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">4. Teléfono de contacto <span class="required">*</span></label>
+                                    <input type="tel" class="form-control" name="telefono" pattern="[0-9+\-\s()]{7,20}" title="Ingrese un número de teléfono válido" required>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">5. Email corporativo <span class="required">*</span></label>
+                                    <input type="email" class="form-control" name="email" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Características del Negocio -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card question-card">
+                        <div class="card-header bg-success text-white">
+                            <h4 class="mb-0">🏢 Sección 2: Características del Negocio</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">6. ¿Qué tipo de negocio o servicio opera? <span class="required">*</span></label>
+                                <select class="form-control" name="tipo_negocio" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="clinica">Clínica/Centro Médico</option>
+                                    <option value="salon">Salón de Belleza/Spa</option>
+                                    <option value="consultorio">Consultorio Profesional</option>
+                                    <option value="restaurante">Restaurante</option>
+                                    <option value="educacion">Institución Educativa</option>
+                                    <option value="servicios">Servicios Profesionales</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">7. ¿Cuántos empleados manejan turnos actualmente? <span class="required">*</span></label>
+                                <select class="form-control" name="num_empleados" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1-5">1-5 empleados</option>
+                                    <option value="6-15">6-15 empleados</option>
+                                    <option value="16-30">16-30 empleados</option>
+                                    <option value="31-50">31-50 empleados</option>
+                                    <option value="50+">Más de 50 empleados</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">8. ¿Cuántos clientes atienden aproximadamente por día? <span class="required">*</span></label>
+                                <select class="form-control" name="clientes_dia" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1-20">1-20 clientes</option>
+                                    <option value="21-50">21-50 clientes</option>
+                                    <option value="51-100">51-100 clientes</option>
+                                    <option value="101-200">101-200 clientes</option>
+                                    <option value="200+">Más de 200 clientes</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">9. ¿En cuántas ubicaciones operan? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ubicaciones" value="una" required>
+                                    <label class="form-check-label">Una ubicación</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ubicaciones" value="multiples" required>
+                                    <label class="form-check-label">Múltiples ubicaciones</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Sistema Actual -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card question-card">
+                        <div class="card-header bg-warning text-white">
+                            <h4 class="mb-0">⚙️ Sección 3: Sistema Actual de Gestión</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">10. ¿Cómo manejan los turnos actualmente? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sistema_actual" value="manual" required>
+                                    <label class="form-check-label">Manual (agenda física, llamadas)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sistema_actual" value="excel" required>
+                                    <label class="form-check-label">Excel o hojas de cálculo</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sistema_actual" value="software" required>
+                                    <label class="form-check-label">Software especializado</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="sistema_actual" value="ninguno" required>
+                                    <label class="form-check-label">No tienen sistema establecido</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">11. ¿Cuáles son los principales problemas con su sistema actual?</label>
+                                <textarea class="form-control" rows="3" name="problemas_actuales" placeholder="Describa los principales desafíos que enfrentan..."></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">12. ¿Qué tan satisfecho está con su sistema actual? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="satisfaccion" value="muy_insatisfecho" required>
+                                    <label class="form-check-label">Muy insatisfecho</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="satisfaccion" value="insatisfecho" required>
+                                    <label class="form-check-label">Insatisfecho</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="satisfaccion" value="neutral" required>
+                                    <label class="form-check-label">Neutral</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="satisfaccion" value="satisfecho" required>
+                                    <label class="form-check-label">Satisfecho</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Necesidades Específicas -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card question-card">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0">🎯 Sección 4: Necesidades Específicas</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">13. ¿Qué funcionalidades considera más importantes? (Seleccione las 3 más importantes)</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="agendamiento_online">
+                                            <label class="form-check-label">Agendamiento en línea</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="recordatorios">
+                                            <label class="form-check-label">Recordatorios automáticos</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="reportes">
+                                            <label class="form-check-label">Reportes y estadísticas</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="gestion_usuarios">
+                                            <label class="form-check-label">Gestión de usuarios</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="calendario">
+                                            <label class="form-check-label">Vista de calendario</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="historial">
+                                            <label class="form-check-label">Historial de turnos</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="app_movil">
+                                            <label class="form-check-label">Aplicación móvil</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="funcionalidades" value="integraciones">
+                                            <label class="form-check-label">Integraciones con otros sistemas</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">14. ¿Necesitan acceso desde dispositivos móviles? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="acceso_movil" value="si_crucial" required>
+                                    <label class="form-check-label">Sí, es crucial</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="acceso_movil" value="si_conveniente" required>
+                                    <label class="form-check-label">Sí, sería conveniente</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="acceso_movil" value="no_necesario" required>
+                                    <label class="form-check-label">No es necesario</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">15. ¿Qué tan importante es la integración con redes sociales o WhatsApp? <span class="required">*</span></label>
+                                <select class="form-control" name="integracion_redes" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="muy_importante">Muy importante</option>
+                                    <option value="importante">Importante</option>
+                                    <option value="poco_importante">Poco importante</option>
+                                    <option value="no_importante">No importante</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">16. ¿Necesitan manejar diferentes tipos de servicios o especialistas?</label>
+                                <textarea class="form-control" rows="2" name="tipos_servicios" placeholder="Ej: Consultas médicas, tratamientos de belleza, clases, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 5: Presupuesto y Decisión -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card question-card">
+                        <div class="card-header bg-danger text-white">
+                            <h4 class="mb-0">💰 Sección 5: Presupuesto y Decisión</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">17. ¿Cuál es su presupuesto aproximado para este tipo de solución? <span class="required">*</span></label>
+                                <select class="form-control" name="presupuesto" required>
+                                    <option value="">Seleccione un rango</option>
+                                    <option value="bajo">Menos de $500 USD</option>
+                                    <option value="medio">$500 - $1,500 USD</option>
+                                    <option value="alto">$1,500 - $3,000 USD</option>
+                                    <option value="premium">Más de $3,000 USD</option>
+                                    <option value="no_definido">Aún no definido</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">18. ¿Prefieren pago único o suscripción mensual? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="modelo_pago" value="unico" required>
+                                    <label class="form-check-label">Pago único</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="modelo_pago" value="mensual" required>
+                                    <label class="form-check-label">Suscripción mensual</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="modelo_pago" value="flexible" required>
+                                    <label class="form-check-label">Flexible a negociar</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">19. ¿Cuál es su tiempo esperado para implementar una solución? <span class="required">*</span></label>
+                                <select class="form-control" name="tiempo_implementacion" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="inmediato">Inmediatamente</option>
+                                    <option value="1_mes">Dentro de 1 mes</option>
+                                    <option value="3_meses">1-3 meses</option>
+                                    <option value="6_meses">3-6 meses</option>
+                                    <option value="mas_6_meses">Más de 6 meses</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">20. ¿Qué tan importante es el soporte técnico y capacitación? <span class="required">*</span></label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="importancia_soporte" value="crucial" required>
+                                    <label class="form-check-label">Crucial - Necesitamos soporte constante</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="importancia_soporte" value="importante" required>
+                                    <label class="form-check-label">Importante - Soporte inicial y ocasional</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="importancia_soporte" value="minimo" required>
+                                    <label class="form-check-label">Mínimo - Solo documentación básica</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">21. ¿Quién tomaría la decisión final de compra? <span class="required">*</span></label>
+                                <select class="form-control" name="decision_compra" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="yo">Yo mismo/a</option>
+                                    <option value="gerencia">Gerencia general</option>
+                                    <option value="comite">Comité de decisión</option>
+                                    <option value="propietario">Propietario del negocio</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">22. Comentarios adicionales o necesidades específicas:</label>
+                                <textarea class="form-control" rows="4" name="comentarios_adicionales" placeholder="Comparta cualquier información adicional que considere relevante para su evaluación..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Envío -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="form-check form-switch d-flex justify-content-center mb-3">
+                                <input class="form-check-input me-2" type="checkbox" id="aceptar_terminos" required>
+                                <label class="form-check-label" for="aceptar_terminos">
+                                    Acepto que la información proporcionada sea utilizada para evaluar la compatibilidad del sistema con mis necesidades <span class="required">*</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Entrevista
+                            </button>
+                            <p class="text-muted mt-3 mb-0">
+                                <small>Sus datos serán guardados localmente. Esta es una versión de prueba independiente.</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Modal de confirmación -->
+        <div class="modal fade" id="confirmacionModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Entrevista Completada</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-success">
+                            <h6 class="alert-heading">¡Gracias por completar la entrevista!</h6>
+                            <p class="mb-0">Sus respuestas han sido guardadas localmente. En una implementación real, estos datos se enviarían automáticamente a nuestro sistema.</p>
+                        </div>
+                        <div id="resumenRespuestas"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="descargarRespuestas()">
+                            <i class="fas fa-download me-2"></i>Descargar Respuestas
+                        </button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Progress indicator
+        const form = document.getElementById('entrevistaForm');
+        const progressBar = document.getElementById('progressBar');
+        const requiredFields = form.querySelectorAll('[required]');
+        
+        function updateProgress() {
+            let completed = 0;
+            const radioGroups = {};
+            
+            requiredFields.forEach(field => {
+                if (field.type === 'radio') {
+                    if (!radioGroups[field.name]) {
+                        radioGroups[field.name] = form.querySelector(`input[name="${field.name}"]:checked`) ? 1 : 0;
+                    }
+                } else if (field.type === 'checkbox') {
+                    if (field.checked) completed++;
+                } else if (field.value.trim() !== '') {
+                    completed++;
+                }
+            });
+            
+            // Sumar grupos de radio completados
+            completed += Object.values(radioGroups).reduce((sum, val) => sum + val, 0);
+            
+            // Calcular total de campos únicos
+            const uniqueRadioGroups = Object.keys(radioGroups).length;
+            const nonRadioRequired = Array.from(requiredFields).filter(f => f.type !== 'radio' || !radioGroups[f.name]);
+            const totalFields = uniqueRadioGroups + nonRadioRequired.filter(f => f.type !== 'radio').length;
+            
+            const percentage = totalFields > 0 ? (completed / totalFields) * 100 : 0;
+            progressBar.style.width = percentage + '%';
+        }
+
+        // Add event listeners to all form elements
+        form.addEventListener('change', updateProgress);
+        form.addEventListener('input', updateProgress);
+        
+        // Auto-guardado periódico
+        let autoSaveTimeout;
+        function autoGuardar() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                try {
+                    const formData = new FormData(form);
+                    const datos = {};
+                    for (let [key, value] of formData.entries()) {
+                        datos[key] = value;
+                    }
+                    datos.funcionalidades = formData.getAll('funcionalidades');
+                    localStorage.setItem('entrevista_autosave', JSON.stringify(datos));
+                } catch (error) {
+                    console.warn('Error en autoguardado:', error);
+                }
+            }, 2000);
+        }
+        
+        form.addEventListener('change', autoGuardar);
+        form.addEventListener('input', autoGuardar);
+
+        // Nueva función para procesar el formulario de forma independiente
+        function procesarFormulario(event) {
+            event.preventDefault();
+            
+            const funcionalidades = form.querySelectorAll('input[name="funcionalidades"]:checked');
+            if (funcionalidades.length > 3) {
+                alert('Por favor seleccione máximo 3 funcionalidades en la pregunta 13.');
+                return false;
+            }
+            
+            if (!form.querySelector('#aceptar_terminos').checked) {
+                alert('Debe aceptar los términos para continuar.');
+                return false;
+            }
+
+            try {
+                // Recopilar todas las respuestas
+                const formData = new FormData(form);
+                const respuestas = {
+                    fecha_entrevista: new Date().toLocaleString('es-ES'),
+                    nombre: formData.get('nombre'),
+                    cargo: formData.get('cargo'),
+                    empresa: formData.get('empresa'),
+                    telefono: formData.get('telefono'),
+                    email: formData.get('email'),
+                    tipo_negocio: formData.get('tipo_negocio'),
+                    num_empleados: formData.get('num_empleados'),
+                    clientes_dia: formData.get('clientes_dia'),
+                    ubicaciones: formData.get('ubicaciones'),
+                    sistema_actual: formData.get('sistema_actual'),
+                    problemas_actuales: formData.get('problemas_actuales'),
+                    satisfaccion: formData.get('satisfaccion'),
+                    funcionalidades: formData.getAll('funcionalidades'),
+                    acceso_movil: formData.get('acceso_movil'),
+                    integracion_redes: formData.get('integracion_redes'),
+                    tipos_servicios: formData.get('tipos_servicios'),
+                    presupuesto: formData.get('presupuesto'),
+                    modelo_pago: formData.get('modelo_pago'),
+                    tiempo_implementacion: formData.get('tiempo_implementacion'),
+                    importancia_soporte: formData.get('importancia_soporte'),
+                    decision_compra: formData.get('decision_compra'),
+                    comentarios_adicionales: formData.get('comentarios_adicionales')
+                };
+
+                // Guardar en localStorage
+                const entrevistasGuardadas = JSON.parse(localStorage.getItem('entrevistas_ts') || '[]');
+                entrevistasGuardadas.push(respuestas);
+                localStorage.setItem('entrevistas_ts', JSON.stringify(entrevistasGuardadas));
+                
+                // Limpiar autoguardado
+                localStorage.removeItem('entrevista_autosave');
+
+                // Mostrar resumen
+                mostrarResumen(respuestas);
+                
+                // Mostrar modal de confirmación
+                const modal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
+                modal.show();
+                
+            } catch (error) {
+                console.error('Error al procesar formulario:', error);
+                alert('Hubo un error al guardar sus respuestas. Por favor intente nuevamente.');
+            }
+
+            return false;
+        }
+
+        function mostrarResumen(respuestas) {
+            const resumen = document.getElementById('resumenRespuestas');
+            const tiposNegocio = {
+                'clinica': 'Clínica/Centro Médico',
+                'salon': 'Salón de Belleza/Spa',
+                'consultorio': 'Consultorio Profesional',
+                'restaurante': 'Restaurante',
+                'educacion': 'Institución Educativa',
+                'servicios': 'Servicios Profesionales',
+                'otro': 'Otro'
+            };
+
+            resumen.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-user me-2"></i>Información de Contacto:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Nombre:</strong> ${respuestas.nombre}</li>
+                            <li><strong>Email:</strong> ${respuestas.email}</li>
+                            <li><strong>Empresa:</strong> ${respuestas.empresa}</li>
+                            <li><strong>Tipo:</strong> ${tiposNegocio[respuestas.tipo_negocio] || respuestas.tipo_negocio}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-bar me-2"></i>Características del Negocio:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Empleados:</strong> ${respuestas.num_empleados}</li>
+                            <li><strong>Clientes/día:</strong> ${respuestas.clientes_dia}</li>
+                            <li><strong>Presupuesto:</strong> ${respuestas.presupuesto}</li>
+                            <li><strong>Implementación:</strong> ${respuestas.tiempo_implementacion}</li>
+                        </ul>
+                    </div>
+                </div>
+                ${respuestas.funcionalidades.length > 0 ? `
+                <div class="mt-3">
+                    <h6><i class="fas fa-star me-2"></i>Funcionalidades Prioritarias:</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        ${respuestas.funcionalidades.map(func => `<span class="badge bg-primary">${func.replace('_', ' ')}</span>`).join(' ')}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        function descargarRespuestas() {
+            try {
+                const entrevistasGuardadas = JSON.parse(localStorage.getItem('entrevistas_ts') || '[]');
+                const ultima = entrevistasGuardadas[entrevistasGuardadas.length - 1];
+                
+                if (ultima) {
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ultima, null, 2));
+                    const downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href", dataStr);
+                    downloadAnchorNode.setAttribute("download", `entrevista_${ultima.nombre.replace(/\s+/g, '_')}_${new Date().getTime()}.json`);
+                    document.body.appendChild(downloadAnchorNode);
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                } else {
+                    alert('No hay entrevistas guardadas para descargar.');
+                }
+            } catch (error) {
+                console.error('Error al descargar respuestas:', error);
+                alert('Error al descargar las respuestas. Por favor intente nuevamente.');
+            }
+        }
+
+        // Función para ver todas las entrevistas guardadas (para desarrollo)
+        function verEntrevistasGuardadas() {
+            try {
+                const entrevistas = JSON.parse(localStorage.getItem('entrevistas_ts') || '[]');
+                console.log('Entrevistas guardadas:', entrevistas);
+                return entrevistas;
+            } catch (error) {
+                console.error('Error al leer entrevistas:', error);
+                return [];
+            }
+        }
+
+        // Función para limpiar entrevistas guardadas
+        function limpiarEntrevistasGuardadas() {
+            try {
+                localStorage.removeItem('entrevistas_ts');
+                localStorage.removeItem('entrevista_autosave');
+                console.log('Entrevistas eliminadas del almacenamiento local');
+                return true;
+            } catch (error) {
+                console.error('Error al limpiar almacenamiento:', error);
+                return false;
+            }
+        }
+
+        // Restaurar autoguardado al cargar
+        function restaurarAutoguardado() {
+            try {
+                const autoSave = localStorage.getItem('entrevista_autosave');
+                if (autoSave) {
+                    const datos = JSON.parse(autoSave);
+                    
+                    if (confirm('Se detectó un borrador guardado automáticamente. ¿Desea restaurarlo?')) {
+                        Object.keys(datos).forEach(key => {
+                            if (key === 'funcionalidades') {
+                                datos[key].forEach(valor => {
+                                    const checkbox = form.querySelector(`input[name="funcionalidades"][value="${valor}"]`);
+                                    if (checkbox) checkbox.checked = true;
+                                });
+                            } else {
+                                const field = form.querySelector(`[name="${key}"]`);
+                                if (field) {
+                                    if (field.type === 'radio' || field.type === 'checkbox') {
+                                        const input = form.querySelector(`input[name="${key}"][value="${datos[key]}"]`);
+                                        if (input) input.checked = true;
+                                    } else {
+                                        field.value = datos[key];
+                                    }
+                                }
+                            }
+                        });
+                        updateProgress();
+                    } else {
+                        localStorage.removeItem('entrevista_autosave');
+                    }
+                }
+            } catch (error) {
+                console.warn('Error al restaurar autoguardado:', error);
+                localStorage.removeItem('entrevista_autosave');
+            }
+        }
+        
+        // Initialize progress
+        updateProgress();
+
+        // Agregar algunas utilidades para desarrollo
+        window.addEventListener('load', function() {
+            console.log('🎯 Formulario de Entrevista T&S - Versión Independiente');
+            console.log('📊 Funciones disponibles en consola:');
+            console.log('   - verEntrevistasGuardadas(): Ver todas las entrevistas');
+            console.log('   - limpiarEntrevistasGuardadas(): Limpiar almacenamiento local');
+            
+            // Mostrar contador de entrevistas guardadas
+            const entrevistas = JSON.parse(localStorage.getItem('entrevistas_ts') || '[]');
+            if (entrevistas.length > 0) {
+                console.log(`💾 ${entrevistas.length} entrevista(s) guardada(s) localmente`);
+            }
+            
+            // Restaurar autoguardado si existe
+            restaurarAutoguardado();
+        });
+    </script>
+</body>
+</html>
